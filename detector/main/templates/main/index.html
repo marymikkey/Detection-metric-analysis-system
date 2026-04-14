@@ -1,0 +1,486 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DetectEval — платформа анализа детекции нейронных сетей</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+    <style>
+        /* Дополнительные стили для современного вида */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .card-custom {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 30px;
+        }
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        .card-header-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 15px 25px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .card-header-custom i {
+            transition: transform 0.3s ease;
+        }
+        .card-header-custom.collapsed i {
+            transform: rotate(-90deg);
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary-custom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        .badge-dataset {
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .badge-dataset:hover, .badge-dataset.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .metric-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+        }
+        .result-image {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .result-image img {
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+        .result-image img:hover {
+            transform: scale(1.02);
+        }
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+        .nav-tabs .nav-link {
+            border: none;
+            color: #495057;
+            font-weight: 500;
+            padding: 12px 25px;
+        }
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero секция -->
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-brain me-2"></i>DetectEval
+        </h1>
+        <p class="lead mb-4">Универсальная платформа для анализа качества детекции нейронных сетей</p>
+        <p>Загрузите датасет и модель или выберите из предложенных — получите полный анализ за несколько минут</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Вкладки для переключения режимов -->
+    <ul class="nav nav-tabs justify-content-center mb-5" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="predefined-tab" data-bs-toggle="tab" data-bs-target="#predefined" type="button" role="tab">
+                <i class="fas fa-database me-2"></i>Готовые датасеты и модели
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab">
+                <i class="fas fa-upload me-2"></i>Загрузить свои
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <!-- Вкладка с готовыми решениями -->
+        <div class="tab-pane fade show active" id="predefined" role="tabpanel">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header-custom" data-bs-toggle="collapse" data-bs-target="#predefinedDatasets">
+                            <i class="fas fa-chevron-down me-2"></i> Выберите датасет
+                        </div>
+                        <div class="collapse show" id="predefinedDatasets">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap">
+                                    <span class="badge-dataset" data-dataset="coco">COCO 2017</span>
+                                    <span class="badge-dataset" data-dataset="voc">PASCAL VOC 2012</span>
+                                    <span class="badge-dataset" data-dataset="cityscapes">Cityscapes</span>
+                                    <span class="badge-dataset" data-dataset="kitti">KITTI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header-custom" data-bs-toggle="collapse" data-bs-target="#predefinedModels">
+                            <i class="fas fa-chevron-down me-2"></i> Выберите модель
+                        </div>
+                        <div class="collapse show" id="predefinedModels">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap">
+                                    <span class="badge-dataset" data-model="yolov8">YOLOv8</span>
+                                    <span class="badge-dataset" data-model="fasterrcnn">Faster R-CNN</span>
+                                    <span class="badge-dataset" data-model="ssd">SSD</span>
+                                    <span class="badge-dataset" data-model="detr">DETR</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <button class="btn btn-primary-custom" id="startPredefinedAnalysis">
+                    <i class="fas fa-chart-line me-2"></i>Начать анализ
+                </button>
+            </div>
+        </div>
+
+        <!-- Вкладка с загрузкой своих данных -->
+        <div class="tab-pane fade" id="upload" role="tabpanel">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header-custom" data-bs-toggle="collapse" data-bs-target="#uploadDataset">
+                            <i class="fas fa-chevron-down me-2"></i> Загрузить датасет
+                        </div>
+                        <div class="collapse show" id="uploadDataset">
+                            <div class="card-body">
+                                <form id="datasetUploadForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Название датасета</label>
+                                        <input type="text" class="form-control" placeholder="например: my_custom_dataset">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Файлы датасета (ZIP или папка с изображениями и аннотациями)</label>
+                                        <input type="file" class="form-control" accept=".zip,.json,.xml">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Формат аннотаций</label>
+                                        <select class="form-select">
+                                            <option>COCO JSON</option>
+                                            <option>PASCAL VOC XML</option>
+                                            <option>YOLO TXT</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom w-100">
+                                        <i class="fas fa-cloud-upload-alt me-2"></i>Загрузить датасет
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header-custom" data-bs-toggle="collapse" data-bs-target="#uploadModel">
+                            <i class="fas fa-chevron-down me-2"></i> Загрузить модель
+                        </div>
+                        <div class="collapse show" id="uploadModel">
+                            <div class="card-body">
+                                <form id="modelUploadForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Название модели</label>
+                                        <input type="text" class="form-control" placeholder="например: my_yolo_model">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Файл модели (.pt, .pth, .h5)</label>
+                                        <input type="file" class="form-control" accept=".pt,.pth,.h5,.onnx">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Архитектура</label>
+                                        <select class="form-select">
+                                            <option>YOLO</option>
+                                            <option>Faster R-CNN</option>
+                                            <option>SSD</option>
+                                            <option>Custom</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom w-100">
+                                        <i class="fas fa-microchip me-2"></i>Загрузить модель
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <button class="btn btn-primary-custom" id="startCustomAnalysis">
+                    <i class="fas fa-chart-line me-2"></i>Начать анализ (с загруженными данными)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок результатов (появляется после анализа) -->
+    <div id="resultsSection" style="display: none;">
+        <hr class="my-5">
+        <h2 class="text-center mb-4"><i class="fas fa-chart-bar me-2"></i>Результаты анализа</h2>
+
+        <!-- EDA датасета -->
+        <div class="card card-custom">
+            <div class="card-header-custom" data-bs-toggle="collapse" data-bs-target="#edaResults">
+                <i class="fas fa-chart-pie me-2"></i> EDA датасета
+            </div>
+            <div class="collapse show" id="edaResults">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <i class="fas fa-images fa-2x mb-2" style="color: #667eea;"></i>
+                                <div class="metric-value" id="totalImages">-</div>
+                                <div>Всего изображений</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <i class="fas fa-tags fa-2x mb-2" style="color: #667eea;"></i>
+                                <div class="metric-value" id="totalObjects">-</div>
+                                <div>Всего объектов</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <i class="fas fa-chart-line fa-2x mb-2" style="color: #667eea;"></i>
+                                <div class="metric-value" id="avgObjects">-</div>
+                                <div>Ср. объектов на изображение</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <i class="fas fa-layer-group fa-2x mb-2" style="color: #667eea;"></i>
+                                <div class="metric-value" id="numClasses">-</div>
+                                <div>Классов объектов</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h5>Распределение классов</h5>
+                        <canvas id="classDistributionChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Метрики модели -->
+        <div class="card card-custom">
+            <div class="card-header-custom" data-bs-toggle="collapse" data-bs-target="#metricsResults">
+                <i class="fas fa-chart-line me-2"></i> Метрики модели
+            </div>
+            <div class="collapse show" id="metricsResults">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value" id="map50">-</div>
+                                <div>mAP@0.5</div>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar" id="map50Bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value" id="map5095">-</div>
+                                <div>mAP@0.5:0.95</div>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar" id="map5095Bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value" id="fps">-</div>
+                                <div>FPS (скорость)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h5>Precision-Recall кривая</h5>
+                        <canvas id="prCurveChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Примеры детекции -->
+        <div class="card card-custom">
+            <div class="card-header-custom" data-bs-toggle="collapse" data-bs-target="#examplesResults">
+                <i class="fas fa-images me-2"></i> Примеры детекции
+            </div>
+            <div class="collapse show" id="examplesResults">
+                <div class="card-body">
+                    <div class="row" id="detectionExamples">
+                        <!-- Сюда будут подгружаться примеры изображений с боксами -->
+                        <div class="col-md-4">
+                            <div class="result-image text-center">
+                                <img src="https://via.placeholder.com/300x200?text=Пример+1" class="img-fluid" alt="Пример детекции">
+                                <p class="mt-2"><small>Пример 1: 3 объекта обнаружено</small></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="result-image text-center">
+                                <img src="https://via.placeholder.com/300x200?text=Пример+2" class="img-fluid" alt="Пример детекции">
+                                <p class="mt-2"><small>Пример 2: 5 объектов обнаружено</small></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="result-image text-center">
+                                <img src="https://via.placeholder.com/300x200?text=Пример+3" class="img-fluid" alt="Пример детекции">
+                                <p class="mt-2"><small>Пример 3: 2 объекта обнаружено</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопка экспорта отчета -->
+        <div class="text-center mt-4">
+            <button class="btn btn-primary-custom" id="exportReport">
+                <i class="fas fa-download me-2"></i>Экспортировать отчет (PDF)
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container text-center">
+        <p class="mb-2">DetectEval — инструмент для профессионалов в области компьютерного зрения</p>
+        <small>© 2025 DetectEval. Все права защищены.</small>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Имитация загрузки данных (в реальном проекте здесь будут AJAX запросы к Django)
+    document.getElementById('startPredefinedAnalysis').addEventListener('click', function() {
+        // Показываем секцию результатов
+        document.getElementById('resultsSection').style.display = 'block';
+
+        // Имитируем получение данных EDA
+        document.getElementById('totalImages').innerText = '12,847';
+        document.getElementById('totalObjects').innerText = '98,234';
+        document.getElementById('avgObjects').innerText = '7.65';
+        document.getElementById('numClasses').innerText = '80';
+
+        // Имитация метрик
+        document.getElementById('map50').innerText = '0.764';
+        document.getElementById('map5095').innerText = '0.512';
+        document.getElementById('fps').innerText = '45.2';
+
+        // Обновляем progress bars
+        document.getElementById('map50Bar').style.width = '76.4%';
+        document.getElementById('map5095Bar').style.width = '51.2%';
+
+        // Рисуем графики (пример)
+        const ctx1 = document.getElementById('classDistributionChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['person', 'car', 'dog', 'cat', 'bicycle', 'bus'],
+                datasets: [{
+                    label: 'Количество объектов',
+                    data: [24567, 18923, 4567, 3892, 5678, 3456],
+                    backgroundColor: 'rgba(102,126,234,0.5)',
+                    borderColor: 'rgba(102,126,234,1)',
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        const ctx2 = document.getElementById('prCurveChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 20}, (_, i) => (i/19).toFixed(2)),
+                datasets: [{
+                    label: 'Precision-Recall',
+                    data: Array.from({length: 20}, (_, i) => Math.pow(i/19, 0.5)),
+                    borderColor: 'rgba(102,126,234,1)',
+                    fill: false
+                }]
+            }
+        });
+
+        // Прокручиваем к результатам
+        document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Анимация для карточек
+    document.querySelectorAll('.card-header-custom').forEach(header => {
+        header.addEventListener('click', function() {
+            this.classList.toggle('collapsed');
+        });
+    });
+
+    // Обработка выбора датасетов/моделей
+    document.querySelectorAll('.badge-dataset').forEach(badge => {
+        badge.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+    });
+</script>
+</body>
+</html>
