@@ -1,0 +1,114 @@
+[
+  {
+    "dataset": "ANTI-UAV_visible_day_medium_1seq_124000_1_6",
+    "model": "yolo12s_120326_base",
+    "counts": {
+      "small": 0,
+      "medium": 0,
+      "large": 421
+    },
+    "ranges": {
+      "small": [
+        0,
+        1024
+      ],
+      "medium": [
+        1024,
+        9216
+      ],
+      "large": [
+        9216,
+        1000000000000.0
+      ]
+    },
+    "avg_area": {
+      "small": null,
+      "medium": null,
+      "large": 14894.926964751507
+    }
+  },
+  {
+    "dataset": "ANTI-UAV_visible_day_medium_1seq_124000_1_6",
+    "model": "best_base",
+    "counts": {
+      "small": 0,
+      "medium": 0,
+      "large": 421
+    },
+    "ranges": {
+      "small": [
+        0,
+        1024
+      ],
+      "medium": [
+        1024,
+        9216
+      ],
+      "large": [
+        9216,
+        1000000000000.0
+      ]
+    },
+    "avg_area": {
+      "small": null,
+      "medium": null,
+      "large": 14894.926964751507
+    }
+  },
+  {
+    "dataset": "ANTI-UAV_visible_day_medium_2seq",
+    "model": "yolo12s_120326_base",
+    "counts": {
+      "small": 0,
+      "medium": 1739,
+      "large": 175
+    },
+    "ranges": {
+      "small": [
+        0,
+        1024
+      ],
+      "medium": [
+        1024,
+        9216
+      ],
+      "large": [
+        9216,
+        1000000000000.0
+      ]
+    },
+    "avg_area": {
+      "small": null,
+      "medium": 7586.0288038242625,
+      "large": 10064.78267452021
+    }
+  },
+  {
+    "dataset": "ANTI-UAV_visible_day_medium_2seq",
+    "model": "best_base",
+    "counts": {
+      "small": 0,
+      "medium": 1739,
+      "large": 175
+    },
+    "ranges": {
+      "small": [
+        0,
+        1024
+      ],
+      "medium": [
+        1024,
+        9216
+      ],
+      "large": [
+        9216,
+        1000000000000.0
+      ]
+    },
+    "avg_area": {
+      "small": null,
+      "medium": 7586.0288038242625,
+      "large": 10064.78267452021
+    }
+  }
+]

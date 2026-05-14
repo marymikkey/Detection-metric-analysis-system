@@ -1,0 +1,13 @@
+dataset,model,size_class,count,avg_area,range_min,range_max
+ANTI-UAV_visible_day_medium_1seq_124000_1_6,yolo12s_120326_base,small,0,,0,1024
+ANTI-UAV_visible_day_medium_1seq_124000_1_6,yolo12s_120326_base,medium,0,,1024,9216
+ANTI-UAV_visible_day_medium_1seq_124000_1_6,yolo12s_120326_base,large,421,14894.926964751507,9216,1000000000000.0
+ANTI-UAV_visible_day_medium_1seq_124000_1_6,best_base,small,0,,0,1024
+ANTI-UAV_visible_day_medium_1seq_124000_1_6,best_base,medium,0,,1024,9216
+ANTI-UAV_visible_day_medium_1seq_124000_1_6,best_base,large,421,14894.926964751507,9216,1000000000000.0
+ANTI-UAV_visible_day_medium_2seq,yolo12s_120326_base,small,0,,0,1024
+ANTI-UAV_visible_day_medium_2seq,yolo12s_120326_base,medium,1739,7586.0288038242625,1024,9216
+ANTI-UAV_visible_day_medium_2seq,yolo12s_120326_base,large,175,10064.78267452021,9216,1000000000000.0
+ANTI-UAV_visible_day_medium_2seq,best_base,small,0,,0,1024
+ANTI-UAV_visible_day_medium_2seq,best_base,medium,1739,7586.0288038242625,1024,9216
+ANTI-UAV_visible_day_medium_2seq,best_base,large,175,10064.78267452021,9216,1000000000000.0
